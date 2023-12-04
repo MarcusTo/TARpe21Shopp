@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TARpe21ShopVaitmaa.Core.Dto.OpenWeatherDto;
 using TARpe21ShopVaitmaa.Core.Dto.WeatherDtos;
 using TARpe21ShopVaitmaa.Core.ServiceInterface;
 
@@ -58,6 +59,32 @@ namespace TARpe21ShopVaitmaa.ApplicationServices.Services
                 weatherInfo.DailyForecasts[0].Night.PrecipitationIntensity = dto.NightPrecipitationIntensity;
             }
             return dto;
+        }
+
+        public async Task<OpenWeatherResultDto> OpenWeatherDetail(OpenWeatherResultDto dto)
+        {
+            string apikey = "99c5555f5a7868ea041e0272e07326d0";
+            var url = $"https://api.openweathermap.org/data/2.5/weather?q={dto.City}&units=metric&APPID={apikey}";
+
+            using (WebClient client = new WebClient())
+            {
+                string json = client.DownloadString(url);
+                OpenWeatherRootDto weatherResult = (new JavaScriptSerializer()).Deserialize<OpenWeatherRootDto>(json);
+
+                dto.City = weatherResult.Name;
+                dto.Timezone = weatherResult.Timezone;
+                dto.Name = weatherResult.Name;
+                dto.Lon = weatherResult.Lon;
+                dto.Lat = weatherResult.Lat;
+                dto.Temperature = Math.Round(weatherResult.Main.Temp);
+                dto.Feels_like = Math.Round(weatherResult.Main.FeelsLike);
+                dto.Humidity = weatherResult.Main.Humidity;
+                dto.Pressure = weatherResult.Main.Pressure;
+                dto.Speed = weatherResult.Wind.Speed;
+                dto.Description = weatherResult.Weather[0].Description;
+
+            }
+                return dto;
         }
     }
 }

@@ -103,16 +103,71 @@ namespace TARpe21ShopVaitmaa.SpaceshipTest
             };
             return spaceship;
         }
-        //[Fact]
-        //public async Task Should_DeleteByIdSpaceship_WhenDeleteSpaceship()
-        //{
 
-        //}
+        private SpaceshipDto MockNotUpdateSpaceship()
+        {
+            SpaceshipDto spaceship = new()
+            {
+                Name = "Test name",
+                Description = "Test description",
+                PassengerCount = 4,
+                CrewCount = 4,
+                CargoWeight = 3000,
+                MaxSpeedInVaccuum = 200,
+                BuiltAtDate = DateTime.Now,
+                MaidenLaunch = DateTime.Now,
+                Manufacturer = "Test manufacturer",
+                IsSpaceshipPreviouslyOwned = true,
+                FullTripsCount = 1,
+                Type = "Test Type",
+                EnginePower = 9001,
+                FuelConsumptionPerDay = 4000,
+                MaintenanceCount = 0,
+                LastMaintenance = DateTime.Now,
+                CreatedAt = DateTime.Now,
+                ModifiedAt = DateTime.Now,
+            };
+            return spaceship;
+        }
+        [Fact]
+        public async Task Should_DeleteByIdSpaceship_WhenDeleteSpaceship()
+        {
+            SpaceshipDto dto = MockSpaceshipData();
+            var SpaceShip = await Svc<ISpaceshipsServices>().Create(dto);
 
-        //[Fact]
-        //public async Task ShouldNot_UpdateSpaceship_WhenNotUpdateData()
-        //{
+            var result = await Svc<ISpaceshipsServices>().Delete((Guid)SpaceShip.Id);
+            Assert.Equal(result, SpaceShip);
 
-        //}
+        }
+
+        
+        [Fact]
+        public async Task ShouldNot_UpdateSpaceship_WhenNotUpdateData()
+        {
+            SpaceshipDto dto = MockSpaceshipData();
+            var Spaceship = await Svc<ISpaceshipsServices>().Create(dto);
+
+            SpaceshipDto NullUpdate = MockNotUpdateSpaceship();
+            var result = await Svc<ISpaceshipsServices>().Update(NullUpdate);
+
+            var NullID = NullUpdate.Id;
+
+            Assert.True(result.Id != NullID);
+        }
+
+        [Fact]
+        public async Task ShouldNot_DeleteByIdSpaceship_WhenDidNotDeleteSpaceship()
+        {
+            SpaceshipDto dto = MockSpaceshipData();
+            var spaceShip = await Svc<ISpaceshipsServices>().Create(dto);
+            var spaceshipId = (Guid)spaceShip.Id;
+
+            var result = await Svc<ISpaceshipsServices>().Delete(spaceshipId);
+
+            Assert.Equal(spaceShip, result);
+
+            //var retrievedSpaceship = await Svc<ISpaceshipsServices>();
+            //Assert.NotNull(retrievedSpaceship);
+        }
     }
 }

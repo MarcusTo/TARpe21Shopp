@@ -29,7 +29,7 @@ namespace TARpe21ShopVaitmaa.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult City()
+        public IActionResult City(string city)
         {
             WeatherResultDto dto = new();
             WeatherViewModel vm = new();
